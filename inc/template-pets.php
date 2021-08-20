@@ -16,6 +16,16 @@ get_header(); ?>
 
   <p>This page took <strong><?php echo timer_stop();?></strong> seconds to prepare. Found <strong>x</strong> results (showing the first x).</p>
 
+  <?php 
+    global $wpdb;
+    $tablename = $wpdb->prefix . 'pets';
+    // Use prepare to sanitise input. Placeholders %s for string, %d for digit/number
+    // $ourQuery = $wpdb->prepare("SELECT * FROM wp_pets WHERE species = %s AND birthyear > %d LIMIT 10", array('hamster', '2019'));
+    $ourQuery = $wpdb->prepare("SELECT * FROM $tablename LIMIT 100");
+    $pets = $wpdb->get_results($ourQuery);
+    // var_dump($pets);
+  ?>
+
   <table class="pet-adoption-table">
     <tr>
       <th>Name</th>
@@ -26,15 +36,19 @@ get_header(); ?>
       <th>Favorite Color</th>
       <th>Favorite Food</th>
     </tr>
-    <tr>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-    </tr>
+    <?php
+      foreach($pets as $pet) { ?>
+        <tr>
+          <td><?php echo $pet->petname; ?></td>
+          <td><?php echo $pet->species; ?></td>
+          <td><?php echo $pet->petweight; ?></td>
+          <td><?php echo $pet->birthyear; ?></td>
+          <td><?php echo $pet->favhobby; ?></td>
+          <td><?php echo $pet->favcolor; ?></td>
+          <td><?php echo $pet->favfood; ?></td>
+        </tr>
+      <?php }
+    ?>
   </table>
   
 </div>
